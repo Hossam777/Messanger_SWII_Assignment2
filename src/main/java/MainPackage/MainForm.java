@@ -7,6 +7,7 @@ import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.net.InetAddress;
+import java.util.ArrayList;
 
 public class MainForm {
 
@@ -21,18 +22,31 @@ public class MainForm {
                 //connect to server and peers
                 try {
                     trackerPostIp = new TrackerPostIp();
-                    InetAddress myip=java.net.InetAddress.getLocalHost();
+                    final InetAddress myip=java.net.InetAddress.getLocalHost();
                     trackerPostIp.postIp(myip.getHostAddress(), new TrackerPostIp.CallBack() {
-                        public void completed(JSONArray jsonArray) {
-
+                        public void completed(JSONArray jsonArray) throws Exception {
+                            if(!jsonArray.getJSONObject(0).get("cod").equals("200"))
+                            {
+                                System.out.println(jsonArray.getJSONObject(0).get("cod"));
+                                return;
+                            }
                             jFrame.setVisible(false);
+                            ArrayList<String> ips = new ArrayList<String>();
+                            ips.add("BroadCast");
+                            int i =1;
+                            while(jsonArray.getJSONObject(i) != null){
+                                ips.add(jsonArray.getJSONObject(i).get("ip").toString());
+                            }
+                            if(ips.size() <= 1){
+                                new peersDetails(myip.getHostAddress(),null);
+                            }else
+                                new peersDetails(myip.getHostAddress(),ips);
                         }
 
                         public void failed() {
 
                         }
                     });
-                    new peersDetails(myip.getHostAddress());
                 } catch (Exception e1) {
                     e1.printStackTrace();
                     //handle Socket not responding

@@ -8,6 +8,7 @@ import org.json.JSONArray;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
+import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.concurrent.Future;
@@ -21,16 +22,41 @@ public class tesClass {
     public static void main(String[] args)throws Exception{
         //serverSocket = new ServerSocket(projectPortNumber);
         //startTalking("");
-        TrackerPostIp trackerPostIp = new TrackerPostIp();
-        trackerPostIp.postIp("192.168.1.17", new TrackerPostIp.CallBack() {
-            public void completed(JSONArray jsonArray) {
-                System.out.println(jsonArray.getJSONObject(1).get("ip"));
+        //InetAddress ip=java.net.InetAddress.getLocalHost();
+        /*TrackerPostIp trackerPostIp = new TrackerPostIp();
+        trackerPostIp.test(ip.getHostAddress(), new TrackerPostIp.CallBack() {
+            public void completed(JSONArray jsonArray) throws Exception {
+
+            }
+
+            public void completed(String ip) throws Exception {
+                System.out.println(true + ip);
+                Socket socket = new Socket(ip,6666);
+                DataOutputStream dout=new DataOutputStream(socket.getOutputStream());
+                dout.writeUTF("ekjhgfds Software 2");
+                dout.flush();
+                dout.close();
+                socket.close();
+
+                Socket socketO = new Socket(ip,6666);
+                DataOutputStream doutO=new DataOutputStream(socketO.getOutputStream());
+                doutO.writeUTF("ekjhgfds Software 3");
+                doutO.flush();
+                doutO.close();
+                socketO.close();
             }
 
             public void failed() {
-                System.out.println("failed");
+
             }
-        });
+        });*/
+
+        Socket socket = new Socket("192.168.43.228",9999);
+        DataOutputStream dout=new DataOutputStream(socket.getOutputStream());
+        dout.writeUTF("Eh el 5ra da");
+        dout.flush();
+        dout.close();
+        socket.close();
 
     }
     private static boolean startTalking(String ipaddress){
@@ -54,7 +80,7 @@ public class tesClass {
             String  str=(String)dis.readUTF();
             System.out.println("message= "+str);
 
-            //InetAddress ip=java.net.InetAddress.getLocalHost();
+            InetAddress ip=java.net.InetAddress.getLocalHost();
             //System.out.println("IP Address: "+ip.getHostAddress());
         }catch (Exception ignore){
             return false;

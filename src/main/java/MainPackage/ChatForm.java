@@ -37,7 +37,7 @@ public class ChatForm<ovveride> {
     public boolean sendMessage(String message){
         try {
             DataOutputStream dataOutputStream = new DataOutputStream(socket.getOutputStream());
-            dataOutputStream.writeUTF("messagefrom:" + sourceIp + ":" + message);
+            dataOutputStream.writeUTF("messagefrom:" + sourceIp + ";" + message);
             dataOutputStream.flush();
             dataOutputStream.close();
             return true;
@@ -45,6 +45,9 @@ public class ChatForm<ovveride> {
             e.printStackTrace();
             return false;
         }
+    }
+    public void reciveMessage(String message){
+
     }
     @Override
     public void finalize() throws Throwable {
