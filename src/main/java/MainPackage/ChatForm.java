@@ -1,12 +1,13 @@
 package MainPackage;
 
+import MainPackage.Classes.TrackerPostIp;
+import org.json.JSONArray;
+
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
-import java.net.ServerSocket;
 import java.net.Socket;
 
 public class ChatForm<ovveride> {
@@ -18,7 +19,8 @@ public class ChatForm<ovveride> {
     private JFrame jFrame;
     private Socket socket;
     final String sourceIp;
-    public ChatForm(String sourceIp,String destinationIp) throws Exception{
+    final String destinationIp;
+    public ChatForm(String sourceIp, String destinationIp) throws Exception{
         jFrame = new JFrame(destinationIp);
         jFrame.setContentPane(jPanel);
         jFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -27,14 +29,19 @@ public class ChatForm<ovveride> {
         jFrame.setVisible(true);
         socket = new Socket(destinationIp,4777);
         this.sourceIp = sourceIp;
+        this.destinationIp = destinationIp;
         Sendbtn.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 //send message
-                sendMessage(messageText.getText());
+                try {
+                    sendMessage(messageText.getText());
+                } catch (Throwable throwable) {
+                    throwable.printStackTrace();
+                }
             }
         });
     }
-    public boolean sendMessage(String message){
+    public boolean sendMessage(String message) throws Throwable {
         try {
             DataOutputStream dataOutputStream = new DataOutputStream(socket.getOutputStream());
             dataOutputStream.writeUTF("messagefrom:" + sourceIp + ";" + message);
@@ -42,6 +49,15 @@ public class ChatForm<ovveride> {
             dataOutputStream.close();
             return true;
         } catch (IOException e) {
+            MainForm.tracker.deleteIp(destinationIp, new TrackerPostIp.CallBack() {
+                public void completed(JSONArray jsonArray) throws Throwable {
+
+                }
+
+                public void failed() {
+
+                }
+            });
             e.printStackTrace();
             return false;
         }

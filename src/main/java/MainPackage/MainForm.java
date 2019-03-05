@@ -14,16 +14,17 @@ public class MainForm {
     private JButton connect;
     private JPanel panel1;
     private static JFrame jFrame;
-    private static TrackerPostIp trackerPostIp;
+    public static TrackerPostIp tracker;
+    InetAddress myip;
 
     public MainForm(){
         connect.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 //connect to server and peers
                 try {
-                    trackerPostIp = new TrackerPostIp();
-                    final InetAddress myip=java.net.InetAddress.getLocalHost();
-                    trackerPostIp.postIp(myip.getHostAddress(), new TrackerPostIp.CallBack() {
+                    tracker = new TrackerPostIp();
+                    myip=java.net.InetAddress.getLocalHost();
+                    tracker.postIp(myip.getHostAddress(), new TrackerPostIp.CallBack() {
                         public void completed(JSONArray jsonArray) throws Exception {
                             if(!jsonArray.getJSONObject(0).get("cod").equals("200"))
                             {
@@ -51,6 +52,8 @@ public class MainForm {
                     e1.printStackTrace();
                     //handle Socket not responding
 
+                } catch (Throwable throwable) {
+                    throwable.printStackTrace();
                 }
             }
         });
@@ -66,6 +69,15 @@ public class MainForm {
     @Override
     public void finalize() throws Throwable {
         //close connections
+        tracker.deleteIp(myip.getHostAddress(), new TrackerPostIp.CallBack() {
+            public void completed(JSONArray jsonArray) throws Throwable {
+                super.finalize();
+            }
+
+            public void failed() {
+                System.out.println("Cannot close, Network is busy!");
+            }
+        });
         super.finalize();
     }
 }

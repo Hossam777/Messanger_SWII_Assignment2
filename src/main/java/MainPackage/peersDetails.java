@@ -41,7 +41,7 @@ public class peersDetails  {
                 if(i != -1){
                     try {
                         if(!mysessions.containsKey(onlineIps.get(i)))
-                            mysessions.put(onlineIps.get(i),new ChatForm(myip,onlineIps.get(i)));
+                            mysessions.put(onlineIps.get(i),new ChatForm(myip,onlineIps.get(i), destinationIp1));
                     } catch (Exception e1) {
                         e1.printStackTrace();
                     }
@@ -71,7 +71,7 @@ public class peersDetails  {
                             if(mysessions.containsKey(srcIp)){
                                 mysessions.get(srcIp).reciveMessage(messageText);
                             }else{
-                                mysessions.put(srcIp,new ChatForm(myIp,srcIp));
+                                mysessions.put(srcIp,new ChatForm(myIp,srcIp, destinationIp1));
                                 mysessions.get(srcIp).reciveMessage(messageText);
                             }
                         }else{
