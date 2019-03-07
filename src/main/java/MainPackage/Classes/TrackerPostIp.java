@@ -12,7 +12,7 @@ public class TrackerPostIp {
         public void failed();
     }
 
-    private static final String serverIp = "http://192.168.0.100" ;
+    private static final String serverIp = "http://192.168.43.100" ;
     //private static final String testserverIp = "http://localhost" ;
     //private static final String testserverIp2 = "http://192.168.43.68/My%20Files/tracker/index.php" ;
 

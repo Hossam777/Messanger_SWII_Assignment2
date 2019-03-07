@@ -4,17 +4,26 @@ import java.io.*;
 import java.util.ArrayList;
 import java.util.Scanner;
 
-public class filesInterface {
+public class FilesInterface {
 
-    private static String  name ="history.txt";
-    public  static void Write(String ip ,String msg) throws IOException {
-        BufferedWriter writer= new BufferedWriter(new FileWriter(name,true));
+    private final String fileName;
+    private ArrayList<String> Ips;
+    private ArrayList<String> msgs;
+    public FilesInterface(String fileName){
+        this.fileName = fileName;
+        Ips = new ArrayList<String>();
+        msgs = new ArrayList<String>();
+    }
+    public void Write(String ip ,String msg) throws IOException {
+        BufferedWriter writer= new BufferedWriter(new FileWriter(fileName,true));
         writer.write(ip+" :"+msg);
         writer.newLine();
         writer.close();
+        Ips.add(ip);
+        msgs.add(msg);
     }
-    public  static void Read(ArrayList<String>ips , ArrayList<String>msg) throws IOException {
-        File file = new File(name);
+    public void Read() {
+        File file = new File(fileName);
         Scanner sc = null;
         try {
             sc = new Scanner(file);
@@ -22,8 +31,8 @@ public class filesInterface {
                 String str = sc.nextLine();
                 String arr[];
                 arr = str.split(":");
-                ips.add(arr[0]);
-                msg.add(arr[1]);
+                Ips.add(arr[0]);
+                msgs.add(arr[1]);
 
             }
 

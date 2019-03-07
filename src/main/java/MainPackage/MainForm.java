@@ -6,8 +6,13 @@ import org.json.JSONArray;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
 import java.net.InetAddress;
+import java.net.Socket;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class MainForm {
 
@@ -34,16 +39,15 @@ public class MainForm {
                             jFrame.setVisible(false);
                             ArrayList<String> ips = new ArrayList<String>();
                             ips.add("BroadCast");
-                            int i =1;
-                            while(jsonArray.getJSONObject(i) != null){
+                            for (int i = 1;i<jsonArray.length();i++){
                                 ips.add(jsonArray.getJSONObject(i).get("ip").toString());
                             }
                             if(ips.size() <= 1){
-                                new peersDetails(myip.getHostAddress(),null);
-                            }else
+                                new peersDetails(myip.getHostAddress());
+                            }else{
                                 new peersDetails(myip.getHostAddress(),ips);
+                            }
                         }
-
                         public void failed() {
 
                         }
@@ -80,4 +84,18 @@ public class MainForm {
         });
         super.finalize();
     }
+    /*private void broadcastMyIp(ArrayList<String> ips) throws Exception {
+        ArrayList<Socket> sockets = new ArrayList<Socket>();
+        HashMap<String,DataOutputStream> dataOutputStreams = new HashMap<String, DataOutputStream>();
+        HashMap<String,DataInputStream> dataInputStreams = new HashMap<String, DataInputStream>();
+        for(int i = 1;i<ips.size();i++){
+            Socket socket = new Socket(ips.get(i),4777);
+            DataInputStream dataInputStream = new DataInputStream(socket.getInputStream());
+            DataOutputStream dataOutputStream = new DataOutputStream(socket.getOutputStream());
+            sockets.add(socket);
+            dataInputStreams.put(socket.getLocalAddress().getHostAddress(),dataInputStream);
+            dataOutputStreams.put(socket.getLocalAddress().getHostAddress(),dataOutputStream);
+        }
+        new peersDetails(myip.getHostAddress(),ips);
+    }*/
 }
