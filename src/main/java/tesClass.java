@@ -1,17 +1,10 @@
-import MainPackage.Classes.TrackerPostIp;
-import com.mashape.unirest.http.HttpResponse;
-import com.mashape.unirest.http.JsonNode;
-import com.mashape.unirest.http.Unirest;
-import com.mashape.unirest.http.async.Callback;
-import com.mashape.unirest.http.exceptions.UnirestException;
-import org.json.JSONArray;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.concurrent.Future;
+import java.util.Scanner;
 
 public class tesClass {
 
@@ -48,16 +41,17 @@ public class tesClass {
 
             public void failed() {
 
-            }
-        });*/
+            }        });*/
 
-        Socket socket = new Socket("192.168.43.228",9999);
-        DataOutputStream dout=new DataOutputStream(socket.getOutputStream());
-        dout.writeUTF("Eh el 5ra da");
-        dout.flush();
-        dout.close();
-        socket.close();
-
+        Socket socket = new Socket("192.168.43.68", 6666);
+        Scanner scanner = new Scanner(System.in);
+        DataOutputStream dout = new DataOutputStream(socket.getOutputStream());
+        //dout.writeUTF("newPeer,0,0");
+        //dout.flush();
+        while (true) {
+            dout.writeUTF("msg,0,0," + scanner.nextLine());
+            dout.flush();
+        }
     }
     private static boolean startTalking(String ipaddress){
         try {
