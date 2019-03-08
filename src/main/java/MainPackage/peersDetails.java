@@ -48,8 +48,14 @@ public class peersDetails  {
                 int i = ipsList.getSelectedIndex();
                 if(i != -1){
                     try {
-                        if(!mysessions.containsKey(onlineIps.get(i)))
-                            mysessions.put(onlineIps.get(i),new ChatForm(myip,onlineIps.get(i),dataOutputStreams.get(onlineIps.get(i))));
+                        if(!mysessions.containsKey(onlineIps.get(i)))if(i == 0){
+                            if(broadCast == null){
+                                Collection<DataOutputStream> values = dataOutputStreams.values();
+                                ArrayList<DataOutputStream>dataOutputStreamsarray = new ArrayList<DataOutputStream>(values);
+                                broadCast = new BroadCast(myip, dataOutputStreamsarray);
+                            }else
+                                mysessions.put(onlineIps.get(i),new ChatForm(myip,onlineIps.get(i),dataOutputStreams.get(onlineIps.get(i))));
+                        }
                     } catch (Exception e1) {
                         e1.printStackTrace();
                     }
@@ -81,8 +87,16 @@ public class peersDetails  {
                 int i = ipsList.getSelectedIndex();
                 if(i != -1){
                     try {
-                        if(!mysessions.containsKey(onlineIps.get(i)))
-                            mysessions.put(onlineIps.get(i),new ChatForm(myip,onlineIps.get(i),dataOutputStreams.get(onlineIps.get(i))));
+                        if (!mysessions.containsKey(onlineIps.get(i))){
+                            if(i == 0){
+                                if(broadCast == null){
+                                    Collection<DataOutputStream> values = dataOutputStreams.values();
+                                    ArrayList<DataOutputStream>dataOutputStreamsarray = new ArrayList<DataOutputStream>(values);
+                                    broadCast = new BroadCast(myip, dataOutputStreamsarray);
+                                }else
+                                    mysessions.put(onlineIps.get(i),new ChatForm(myip,onlineIps.get(i),dataOutputStreams.get(onlineIps.get(i))));
+                            }
+                        }
                     } catch (Exception e1) {
                         e1.printStackTrace();
                     }

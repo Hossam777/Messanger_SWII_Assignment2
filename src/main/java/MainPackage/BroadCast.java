@@ -1,8 +1,6 @@
 package MainPackage;
 
 import MainPackage.Classes.FilesInterface;
-import MainPackage.Classes.TrackerPostIp;
-import org.json.JSONArray;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
@@ -58,7 +56,6 @@ public class BroadCast {
                 }
             } catch (IOException e) {
                 }
-                return false;
             }
         return false;
     }
