@@ -1,35 +1,37 @@
 package MainPackage;
 
+import MainPackage.Classes.TrackerPostIp;
+import org.json.JSONArray;
+
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
-import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
+import java.util.*;
+
+import static MainPackage.MainForm.tracker;
 
 public class peersDetails  {
 
     private JPanel jPanel;
-    private JList ipsList;
+    private static JList ipsList;
     private JButton callbtn;
     private static JFrame jFrame;
     private static ServerSocket serverSocket;
-    private ArrayList<String> onlineIps;
-    private HashMap<String,ChatForm> mysessions;
-    private final String myIp;
+    private static ArrayList<String> onlineIps;
+    private static HashMap<String,ChatForm> mysessions;
+    private static String myIp = null;
     private static BroadCast broadCast;
-    private static ArrayList<Socket> sockets ;
+    private static HashMap<String,Socket> sockets ;
     private static HashMap<String,DataInputStream> dataInputStreams ;
     private static HashMap<String,DataOutputStream> dataOutputStreams ;
 
     public peersDetails(final String myip) throws Exception{
         broadCast = null;
-        myIp = myip;
+        this.myIp = myip;
         jFrame = new JFrame("Server");
         jFrame.setContentPane(jPanel);
         jFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -37,7 +39,7 @@ public class peersDetails  {
         jFrame.pack();
         jFrame.setVisible(true);
         serverSocket = new ServerSocket(4777);
-        sockets = new ArrayList<Socket>();
+        sockets = new HashMap<String, Socket>();
         dataInputStreams = new HashMap<String, DataInputStream>();
         dataOutputStreams = new HashMap<String, DataOutputStream>();
         this.onlineIps = new ArrayList<String>();
@@ -48,14 +50,16 @@ public class peersDetails  {
                 int i = ipsList.getSelectedIndex();
                 if(i != -1){
                     try {
-                        if(!mysessions.containsKey(onlineIps.get(i)))if(i == 0){
-                            if(broadCast == null){
-                                Collection<DataOutputStream> values = dataOutputStreams.values();
-                                ArrayList<DataOutputStream>dataOutputStreamsarray = new ArrayList<DataOutputStream>(values);
-                                broadCast = new BroadCast(myip, dataOutputStreamsarray);
-                            }else
+                        if(!mysessions.containsKey(onlineIps.get(i)))
+                            if( i == 0){
+                                if(broadCast == null){
+                                    Collection<DataOutputStream> values = dataOutputStreams.values();
+                                    ArrayList<DataOutputStream>dataOutputStreamsarray = new ArrayList<DataOutputStream>(values);
+                                    new BroadCast(myip,dataOutputStreamsarray);
+                                }
+                            }
+                            else
                                 mysessions.put(onlineIps.get(i),new ChatForm(myip,onlineIps.get(i),dataOutputStreams.get(onlineIps.get(i))));
-                        }
                     } catch (Exception e1) {
                         e1.printStackTrace();
                     }
@@ -66,7 +70,7 @@ public class peersDetails  {
     }
     public peersDetails(final String myip, ArrayList<String> onlineips) throws Exception{
         broadCast = null;
-        myIp = myip;
+        this.myIp = myip;
         jFrame = new JFrame("Server");
         jFrame.setContentPane(jPanel);
         jFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -74,7 +78,7 @@ public class peersDetails  {
         jFrame.pack();
         jFrame.setVisible(true);
         serverSocket = new ServerSocket(4777);
-        this.sockets = new ArrayList<Socket>();
+        this.sockets = new HashMap<String, Socket>();
         this.dataInputStreams = new HashMap<String, DataInputStream>();
         this.dataOutputStreams = new HashMap<String, DataOutputStream>();
         this.onlineIps = onlineips;
@@ -87,15 +91,16 @@ public class peersDetails  {
                 int i = ipsList.getSelectedIndex();
                 if(i != -1){
                     try {
-                        if (!mysessions.containsKey(onlineIps.get(i))){
-                            if(i == 0){
+                        if(!mysessions.containsKey(onlineIps.get(i))){
+                            if( i == 0){
                                 if(broadCast == null){
                                     Collection<DataOutputStream> values = dataOutputStreams.values();
                                     ArrayList<DataOutputStream>dataOutputStreamsarray = new ArrayList<DataOutputStream>(values);
-                                    broadCast = new BroadCast(myip, dataOutputStreamsarray);
-                                }else
-                                    mysessions.put(onlineIps.get(i),new ChatForm(myip,onlineIps.get(i),dataOutputStreams.get(onlineIps.get(i))));
+                                    new BroadCast(myip,dataOutputStreamsarray);
+                                }
                             }
+                            else
+                                mysessions.put(onlineIps.get(i),new ChatForm(myip,onlineIps.get(i),dataOutputStreams.get(onlineIps.get(i))));
                         }
                     } catch (Exception e1) {
                         e1.printStackTrace();
@@ -111,26 +116,42 @@ public class peersDetails  {
             Socket socket = new Socket(onlineIps.get(i),4777);
             DataInputStream dataInputStream = new DataInputStream(socket.getInputStream());
             DataOutputStream dataOutputStream = new DataOutputStream(socket.getOutputStream());
-            sockets.add(socket);
+            sockets.put(onlineIps.get(i),socket);
             dataInputStreams.put(onlineIps.get(i),dataInputStream);
-            starSocketListining(dataInputStream);
             dataOutputStreams.put(onlineIps.get(i),dataOutputStream);
+            starSocketListining(onlineIps.get(i),dataInputStream);
         }
     }
 
-    private void starSocketListining(final DataInputStream dataInputStream){
+    private void starSocketListining(final String ip, final DataInputStream dataInputStream){
         Thread thread = new Thread(new Runnable() {
             public void run() {
-                String message = null,header = null;
-                do{
+                String message ,header ;
+                while(true){
                     try {
                         message = dataInputStream.readUTF();
-                        if(message.equals("close")) break;
+                        if(message.equals("close"))
+                        {
+                            if(broadCast != null) {
+                                broadCast.removeDataOutputStream(dataOutputStreams.get(ip));
+                                if(broadCast.getDataOutputStreamSize() == 0){
+                                    broadCast.finalize();
+                                    broadCast = null;
+                                }
+                            }
+                            mysessions.get(ip).finalize();
+                            mysessions.remove(ip);
+                            dataInputStream.close();
+                            dataInputStreams.remove(ip);
+                            dataOutputStreams.get(ip).close();
+                            dataOutputStreams.remove(ip);
+                            sockets.get(ip).close();
+                            sockets.remove(ip);
+                            break;
+                        }
                         header = message.substring(0,message.indexOf(':'));
                         //handle message
-                        if(header.equals("newip")){
-                            System.out.println("ana hena");
-                        }else if(header.equals("messagefrom")){
+                        if(header.equals("messagefrom")){
                             String srcIp = message.substring(message.indexOf(':')+1,message.indexOf(';'));
                             String messageText = message.substring(message.indexOf(';')+1);
                             ///send message to chat
@@ -156,10 +177,10 @@ public class peersDetails  {
                             ///message corrupted
                             System.out.println("message corrupted");
                         }
-                    } catch (Exception e) {
+                    } catch (Throwable e) {
                         e.printStackTrace();
                     }
-                }while (!message.equals("close"));
+                }
             }
         });
         thread.start();
@@ -174,9 +195,12 @@ public class peersDetails  {
                         remoteip = remoteip.substring(1,remoteip.indexOf(":"));
                         DataOutputStream dataOutputStream = new DataOutputStream(socket.getOutputStream());
                         DataInputStream dataInputStream= new DataInputStream(socket.getInputStream());
+                        sockets.put(remoteip,socket);
                         dataOutputStreams.put(remoteip,dataOutputStream);
                         dataInputStreams.put(remoteip,dataInputStream);
-                        starSocketListining(dataInputStream);
+                        starSocketListining(remoteip,dataInputStream);
+                        if(broadCast != null)
+                            broadCast.addDataOutputStream(dataOutputStream);
                         if(onlineIps.size() == 0)
                             onlineIps.add("BroadCast");
                         onlineIps.add(remoteip);
@@ -188,5 +212,37 @@ public class peersDetails  {
             }
         });
         listeningThread.start();
+    }
+
+    @Override
+    protected void finalize() throws Throwable {
+        DisconectPeer(myIp,true);
+        for ( String key : dataOutputStreams.keySet() ) {
+            dataOutputStreams.get(key).writeUTF("close");
+            dataOutputStreams.get(key).flush();
+        }
+        super.finalize();
+    }
+
+    public static void DisconectPeer(String ip, boolean me) throws Throwable {
+        if(!me){
+            onlineIps.remove(onlineIps.indexOf(ip));
+            dataOutputStreams.get(ip).close();
+            dataOutputStreams.remove(ip);
+            dataInputStreams.get(ip).close();
+            dataInputStreams.remove(ip);
+            sockets.get(ip).close();
+            sockets.remove(ip);
+            ipsList.setListData(onlineIps.toArray());
+        }
+        tracker.deleteIp(ip, new TrackerPostIp.CallBack() {
+            public void completed(JSONArray jsonArray) throws Throwable {
+
+            }
+
+            public void failed() {
+
+            }
+        });
     }
 }
