@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<ClassDiagram name="Hossam">
+  <ClassDiagramComponents>
+    <Class name="BroadCast" package="MainPackage" visibility="public" xPosition="20.0" yPosition="20.0">
+      <Fields>
+        <Field name="jPanel" type="JPanel" visibility="private"/>
+        <Field name="chathistory" type="JLabel" visibility="private"/>
+        <Field name="messageText" type="JTextArea" visibility="private"/>
+        <Field name="Sendbtn" type="JButton" visibility="private"/>
+        <Field name="Generator" type="JButton" visibility="private"/>
+        <Field name="jFrame" type="JFrame" visibility="private"/>
+        <Field name="sourceIp" type="String" visibility="package" isFinal="true"/>
+        <Field name="dataOutputStreams" type="ArrayList&lt;DataOutputStream&gt;" visibility="package"/>
+        <Field name="filesInterface" type="FilesInterface" visibility="private"/>
+        <Field name="generator" type="Thread" visibility="private"/>
+        <Field name="messagesText" type="ArrayList&lt;String&gt;" visibility="package"/>
+        <Field name="messagesIps" type="ArrayList&lt;String&gt;" visibility="package"/>
+      </Fields>
+      <Constructors>
+        <Constructor visibility="public">
+          <Argument type="String" name="sourceIp"/>
+          <Argument type="ArrayList&lt;DataOutputStream&gt;" name="dataOutputStreams"/>
+        </Constructor>
+      </Constructors>
+      <Methods>
+        <Method name="startGenerator" returnType="void" visibility="private"/>
+        <Method name="endGenerator" returnType="void" visibility="private"/>
+        <Method name="sendMessage" returnType="boolean" visibility="public">
+          <Argument type="String" name="message"/>
+        </Method>
+        <Method name="reciveMessage" returnType="void" visibility="public">
+          <Argument type="String" name="ip"/>
+          <Argument type="String" name="message"/>
+        </Method>
+        <Method name="finalize" returnType="void" visibility="protected"/>
+        <Method name="addDataOutputStream" returnType="void" visibility="public">
+          <Argument type="DataOutputStream" name="dataOutputStream"/>
+        </Method>
+        <Method name="removeDataOutputStream" returnType="void" visibility="public">
+          <Argument type="DataOutputStream" name="dataOutputStream"/>
+        </Method>
+        <Method name="getDataOutputStreamSize" returnType="int" visibility="public"/>
+      </Methods>
+    </Class>
+    <Class name="ChatForm" package="MainPackage" visibility="public" xPosition="320.0" yPosition="20.0">
+      <Fields>
+        <Field name="jPanel" type="JPanel" visibility="private"/>
+        <Field name="chathistory" type="JLabel" visibility="private"/>
+        <Field name="messageText" type="JTextArea" visibility="private"/>
+        <Field name="Sendbtn" type="JButton" visibility="private"/>
+        <Field name="Generator" type="JButton" visibility="private"/>
+        <Field name="jFrame" type="JFrame" visibility="private"/>
+        <Field name="sourceIp" type="String" visibility="package" isFinal="true"/>
+        <Field name="dataOutputStream" type="DataOutputStream" visibility="private"/>
+        <Field name="destinationIp" type="String" visibility="package" isFinal="true"/>
+        <Field name="generator" type="Thread" visibility="package"/>
+        <Field name="filesInterface" type="FilesInterface" visibility="private"/>
+        <Field name="messagesText" type="ArrayList&lt;String&gt;" visibility="package"/>
+        <Field name="messagesIps" type="ArrayList&lt;String&gt;" visibility="package"/>
+      </Fields>
+      <Constructors>
+        <Constructor visibility="public">
+          <Argument type="String" name="sourceIp"/>
+          <Argument type="String" name="destinationIp"/>
+          <Argument type="DataOutputStream" name="dataOutputStream"/>
+        </Constructor>
+      </Constructors>
+      <Methods>
+        <Method name="startGenerator" returnType="void" visibility="private"/>
+        <Method name="endGenerator" returnType="void" visibility="private"/>
+        <Method name="sendMessage" returnType="void" visibility="public">
+          <Argument type="String" name="message"/>
+        </Method>
+        <Method name="reciveMessage" returnType="void" visibility="public">
+          <Argument type="String" name="message"/>
+        </Method>
+        <Method name="finalize" returnType="void" visibility="protected"/>
+      </Methods>
+    </Class>
+    <Class name="FilesInterface" package="MainPackage.Classes" visibility="public" xPosition="620.0" yPosition="20.0">
+      <Fields>
+        <Field name="fileName" type="String" visibility="private" isFinal="true"/>
+        <Field name="Ips" type="ArrayList&lt;String&gt;" visibility="private"/>
+        <Field name="msgs" type="ArrayList&lt;String&gt;" visibility="private"/>
+      </Fields>
+      <Constructors>
+        <Constructor visibility="public">
+          <Argument type="String" name="fileName"/>
+        </Constructor>
+      </Constructors>
+      <Methods>
+        <Method name="Write" returnType="void" visibility="public">
+          <Argument type="String" name="ip"/>
+          <Argument type="String" name="msg"/>
+        </Method>
+        <Method name="Read" returnType="void" visibility="public"/>
+      </Methods>
+    </Class>
+    <Class name="TrackerPostIp" package="MainPackage.Classes" visibility="public" xPosition="920.0" yPosition="20.0">
+      <Fields>
+        <Field name="serverIp" type="String" visibility="private" isStatic="true" isFinal="true"/>
+      </Fields>
+      <Constructors/>
+      <Methods>
+        <Method name="postIp" returnType="void" visibility="public">
+          <Argument type="String" name="ip"/>
+          <Argument type="CallBack" name="callBack"/>
+        </Method>
+        <Method name="deleteIp" returnType="void" visibility="public">
+          <Argument type="String" name="ip"/>
+          <Argument type="CallBack" name="callBack"/>
+        </Method>
+      </Methods>
+    </Class>
+    <Class name="MainForm" package="MainPackage" visibility="public" xPosition="1220.0" yPosition="20.0">
+      <Fields>
+        <Field name="connect" type="JButton" visibility="private"/>
+        <Field name="panel1" type="JPanel" visibility="private"/>
+        <Field name="jFrame" type="JFrame" visibility="private" isStatic="true"/>
+        <Field name="tracker" type="TrackerPostIp" visibility="public" isStatic="true"/>
+        <Field name="myip" type="InetAddress" visibility="package"/>
+      </Fields>
+      <Constructors>
+        <Constructor visibility="public"/>
+      </Constructors>
+      <Methods>
+        <Method name="main" returnType="void" visibility="public" isStatic="true">
+          <Argument type="String[]" name="args"/>
+        </Method>
+      </Methods>
+    </Class>
+    <Class name="peersDetails" package="MainPackage" visibility="public" xPosition="1520.0" yPosition="20.0">
+      <Fields>
+        <Field name="jPanel" type="JPanel" visibility="private"/>
+        <Field name="ipsList" type="JList" visibility="private" isStatic="true"/>
+        <Field name="callbtn" type="JButton" visibility="private"/>
+        <Field name="jFrame" type="JFrame" visibility="private" isStatic="true"/>
+        <Field name="serverSocket" type="ServerSocket" visibility="private" isStatic="true"/>
+        <Field name="onlineIps" type="ArrayList&lt;String&gt;" visibility="private" isStatic="true"/>
+        <Field name="mysessions" type="HashMap&lt;String, ChatForm&gt;" visibility="private" isStatic="true"/>
+        <Field name="myIp" type="String" visibility="private" isStatic="true"/>
+        <Field name="broadCast" type="BroadCast" visibility="private" isStatic="true"/>
+        <Field name="sockets" type="HashMap&lt;String, Socket&gt;" visibility="private" isStatic="true"/>
+        <Field name="dataInputStreams" type="HashMap&lt;String, DataInputStream&gt;" visibility="private" isStatic="true"/>
+        <Field name="dataOutputStreams" type="HashMap&lt;String, DataOutputStream&gt;" visibility="private" isStatic="true"/>
+      </Fields>
+      <Constructors>
+        <Constructor visibility="public">
+          <Argument type="String" name="myip"/>
+        </Constructor>
+        <Constructor visibility="public">
+          <Argument type="String" name="myip"/>
+          <Argument type="ArrayList&lt;String&gt;" name="onlineips"/>
+        </Constructor>
+      </Constructors>
+      <Methods>
+        <Method name="setUp" returnType="void" visibility="private"/>
+        <Method name="starSocketListining" returnType="void" visibility="private">
+          <Argument type="String" name="ip"/>
+          <Argument type="DataInputStream" name="dataInputStream"/>
+        </Method>
+        <Method name="listen" returnType="void" visibility="private"/>
+        <Method name="finalize" returnType="void" visibility="protected"/>
+        <Method name="DisconectPeer" returnType="void" visibility="public" isStatic="true">
+          <Argument type="String" name="ip"/>
+          <Argument type="boolean" name="me"/>
+        </Method>
+      </Methods>
+    </Class>
+    <Class name="tesClass" package="" visibility="public" xPosition="1820.0" yPosition="20.0">
+      <Fields>
+        <Field name="serverSocket" type="ServerSocket" visibility="private" isStatic="true"/>
+        <Field name="projectPortNumber" type="int" visibility="private" isStatic="true" isFinal="true"/>
+      </Fields>
+      <Constructors/>
+      <Methods>
+        <Method name="main" returnType="void" visibility="public" isStatic="true">
+          <Argument type="String[]" name="args"/>
+        </Method>
+        <Method name="startTalking" returnType="boolean" visibility="private" isStatic="true">
+          <Argument type="String" name="ipaddress"/>
+        </Method>
+      </Methods>
+    </Class>
+  </ClassDiagramComponents>
+  <ClassDiagramRelations>
+    <HasRelation name="tracker" source="MainPackage.MainForm" target="MainPackage.Classes.TrackerPostIp" type="Aggregation" sourceCardinality="1..1" targetCardinality="1..1"/>
+    <HasRelation name="broadCast" source="MainPackage.peersDetails" target="MainPackage.BroadCast" type="Aggregation" sourceCardinality="1..1" targetCardinality="1..1"/>
+    <HasRelation name="filesInterface" source="MainPackage.BroadCast" target="MainPackage.Classes.FilesInterface" type="Aggregation" sourceCardinality="1..1" targetCardinality="1..1"/>
+    <HasRelation name="mysessions" source="MainPackage.peersDetails" target="MainPackage.ChatForm" type="Aggregation" sourceCardinality="1..1" targetCardinality="0..*" collectionType="HashMap&lt;String, ChatForm&gt;"/>
+    <HasRelation name="filesInterface" source="MainPackage.ChatForm" target="MainPackage.Classes.FilesInterface" type="Aggregation" sourceCardinality="1..1" targetCardinality="1..1"/>
+  </ClassDiagramRelations>
+</ClassDiagram>
